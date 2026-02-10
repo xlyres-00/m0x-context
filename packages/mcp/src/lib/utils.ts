@@ -25,7 +25,7 @@ export function formatSearchResult(result: SearchResult): string {
   // Always include these basic details
   const formattedResult = [
     `- Title: ${result.title}`,
-    `- Context7-compatible library ID: ${result.id}`,
+    `- m0x-context-compatible library ID: ${result.id}`,
     `- Description: ${result.description}`,
   ];
 

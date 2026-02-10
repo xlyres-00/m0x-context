@@ -1,20 +1,22 @@
 {
-  "name": "@upstash/context7",
+  "name": "@m0x/context",
   "private": true,
   "version": "1.0.0",
-  "description": "Context7 monorepo - Documentation tools and SDKs",
+  "description": "m0x-context monorepo - Documentation tools and SDKs",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "pnpm -r run build",
-    "build:sdk": "pnpm --filter @upstash/context7-sdk build",
-    "build:mcp": "pnpm --filter @upstash/context7-mcp build",
-    "build:ai-sdk": "pnpm --filter @upstash/context7-tools-ai-sdk build",
+    "build:sdk": "pnpm --filter @m0x/context-sdk build",
+    "build:mcp": "pnpm --filter @m0x/context-mcp build",
+    "build:ai-sdk": "pnpm --filter @m0x/context-tools-ai-sdk build",
+    "start": "node packages/mcp/dist/index.js --transport http --port ${PORT:-3000}",
+    "start:local": "node packages/mcp/dist/index.js --transport http --port 3000",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",
-    "test:sdk": "pnpm --filter @upstash/context7-sdk test",
-    "test:tools-ai-sdk": "pnpm --filter @upstash/context7-tools-ai-sdk test",
+    "test:sdk": "pnpm --filter @m0x/context-sdk test",
+    "test:tools-ai-sdk": "pnpm --filter @m0x/context-tools-ai-sdk test",
     "clean": "pnpm -r run clean && rm -rf node_modules",
     "lint": "pnpm -r run lint",
     "lint:check": "pnpm -r run lint:check",
@@ -30,13 +32,13 @@
   "keywords": [
     "modelcontextprotocol",
     "mcp",
-    "context7",
+    "m0x-context",
     "vibe-coding",
     "developer tools",
     "documentation",
     "context"
   ],
-  "author": "abdush",
+  "author": "m0x",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/upstash/context7/issues"

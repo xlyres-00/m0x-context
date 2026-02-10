@@ -1,0 +1,26 @@
+# m0x-context Railway Deployment
+
+node_modules
+.git
+.gitignore
+*.log
+*.md
+!README.md
+docs
+examples
+plugins
+test
+tests
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+.vscode
+.idea
+.DS_Store
+.env.local
+.env.*.local
+coverage
+.nyc_output
+dist-test
+tsconfig.tsbuildinfo

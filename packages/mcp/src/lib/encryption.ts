@@ -43,13 +43,13 @@ export interface ClientContext {
 }
 
 /**
- * Generate headers for Context7 API requests.
+ * Generate headers for m0x-context API requests.
  * Handles client IP encryption, authentication, and telemetry headers.
  */
 export function generateHeaders(context: ClientContext): Record<string, string> {
   const headers: Record<string, string> = {
-    "X-Context7-Source": "mcp-server",
-    "X-Context7-Server-Version": SERVER_VERSION,
+    "X-M0X-Source": "mcp-server",
+    "X-M0X-Server-Version": SERVER_VERSION,
   };
 
   if (context.clientIp) {
@@ -59,13 +59,13 @@ export function generateHeaders(context: ClientContext): Record<string, string> 
     headers["Authorization"] = `Bearer ${context.apiKey}`;
   }
   if (context.clientInfo?.ide) {
-    headers["X-Context7-Client-IDE"] = context.clientInfo.ide;
+    headers["X-M0X-Client-IDE"] = context.clientInfo.ide;
   }
   if (context.clientInfo?.version) {
-    headers["X-Context7-Client-Version"] = context.clientInfo.version;
+    headers["X-M0X-Client-Version"] = context.clientInfo.version;
   }
   if (context.transport) {
-    headers["X-Context7-Transport"] = context.transport;
+    headers["X-M0X-Transport"] = context.transport;
   }
 
   return headers;

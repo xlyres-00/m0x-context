@@ -3,7 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { searchLibraries, fetchLibraryContext } from "./lib/api.js";
+import { searchLibraries, fetchLibraryContext, initializeKeyRotation } from "./lib/api.js";
 import { ClientContext } from "./lib/encryption.js";
 import { formatSearchResults, extractClientInfoFromUserAgent } from "./lib/utils.js";
 import { isJWT, validateJWT } from "./lib/jwt.js";
@@ -66,6 +66,22 @@ const CLI_PORT = (() => {
 
 const requestContext = new AsyncLocalStorage<ClientContext>();
 
+// Initialize API key rotation
+// Priority: CLI flag > CONTEXT7_API_KEYS (multiple) > CONTEXT7_API_KEY (single)
+const cliApiKey = cliOptions.apiKey;
+const envApiKeys = process.env.CONTEXT7_API_KEYS; // Comma-separated keys
+const envApiKey = process.env.CONTEXT7_API_KEY;   // Single key
+
+const apiKeysForRotation = cliApiKey || envApiKeys || envApiKey;
+
+if (apiKeysForRotation) {
+  initializeKeyRotation(apiKeysForRotation);
+  const keyCount = apiKeysForRotation.split(',').filter(k => k.trim()).length;
+  console.log(`[m0x-context] Initialized with ${keyCount} API key(s) for rotation`);
+} else {
+  console.log("[m0x-context] Running without API keys (rate limits may apply)");
+}
+
 // Global state for stdio mode only
 let stdioApiKey: string | undefined;
 let stdioClientInfo: { ide?: string; version?: string } | undefined;
@@ -121,7 +137,7 @@ function getClientIp(req: express.Request): string | undefined {
 
 const server = new McpServer(
   {
-    name: "Context7",
+    name: "m0x-context",
     version: SERVER_VERSION,
   },
   {
@@ -144,10 +160,10 @@ server.server.oninitialized = () => {
 server.registerTool(
   "resolve-library-id",
   {
-    title: "Resolve Context7 Library ID",
-    description: `Resolves a package/product name to a Context7-compatible library ID and returns matching libraries.
+    title: "Resolve m0x-context Library ID",
+    description: `Resolves a package/product name to a m0x-context-compatible library ID and returns matching libraries.
 
-You MUST call this function before 'query-docs' to obtain a valid Context7-compatible library ID UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.
+You MUST call this function before 'query-docs' to obtain a valid m0x-context-compatible library ID UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.
 
 Selection Process:
 1. Analyze the query to understand what library/package the user is looking for
@@ -175,7 +191,7 @@ IMPORTANT: Do not call this tool more than 3 times per question. If you cannot f
         ),
       libraryName: z
         .string()
-        .describe("Library name to search for and retrieve a Context7-compatible library ID."),
+        .describe("Library name to search for and retrieve a m0x-context-compatible library ID."),
     },
     annotations: {
       readOnlyHint: true,
@@ -202,7 +218,7 @@ IMPORTANT: Do not call this tool more than 3 times per question. If you cannot f
     const responseText = `Available Libraries:
 
 Each result includes:
-- Library ID: Context7-compatible identifier (format: /org/project)
+- Library ID: m0x-context-compatible identifier (format: /org/project)
 - Name: Library or package name
 - Description: Short summary
 - Code Snippets: Number of available code examples
@@ -231,16 +247,16 @@ server.registerTool(
   "query-docs",
   {
     title: "Query Documentation",
-    description: `Retrieves and queries up-to-date documentation and code examples from Context7 for any programming library or framework.
+    description: `Retrieves and queries up-to-date documentation and code examples from m0x-context for any programming library or framework.
 
-You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool, UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.
+You must call 'resolve-library-id' first to obtain the exact m0x-context-compatible library ID required to use this tool, UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.
 
 IMPORTANT: Do not call this tool more than 3 times per question. If you cannot find what you need after 3 calls, use the best information you have.`,
     inputSchema: {
       libraryId: z
         .string()
         .describe(
-          "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
+          "Exact m0x-context-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
         ),
       query: z
         .string()
@@ -280,7 +296,7 @@ async function main() {
       res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE");
       res.setHeader(
         "Access-Control-Allow-Headers",
-        "Content-Type, MCP-Session-Id, MCP-Protocol-Version, X-Context7-API-Key, Context7-API-Key, X-API-Key, Authorization"
+        "Content-Type, MCP-Session-Id, MCP-Protocol-Version, X-M0X-API-Key, M0X-API-Key, X-API-Key, Authorization"
       );
       res.setHeader("Access-Control-Expose-Headers", "MCP-Session-Id");
 
@@ -469,7 +485,7 @@ async function main() {
 
       httpServer.once("listening", () => {
         console.error(
-          `Context7 Documentation MCP Server v${SERVER_VERSION} running on HTTP at http://localhost:${port}/mcp`
+          `m0x-context Documentation MCP Server v${SERVER_VERSION} running on HTTP at http://localhost:${port}/mcp`
         );
       });
     };
@@ -481,7 +497,7 @@ async function main() {
 
     await server.connect(transport);
 
-    console.error(`Context7 Documentation MCP Server v${SERVER_VERSION} running on stdio`);
+    console.error(`m0x-context Documentation MCP Server v${SERVER_VERSION} running on stdio`);
   }
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "@upstash/context7-sdk",
+  "name": "@m0x/context-sdk",
   "version": "0.3.0",
-  "description": "JavaScript/TypeScript SDK for Context7",
+  "description": "JavaScript/TypeScript SDK for m0x-context",
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
@@ -18,13 +18,13 @@
     "directory": "packages/sdk"
   },
   "keywords": [
-    "context7",
+    "m0x-context",
     "sdk",
     "documentation",
     "ai",
-    "upstash"
+    "m0x"
   ],
-  "author": "Upstash",
+  "author": "m0x",
   "license": "MIT",
   "type": "module",
   "exports": {

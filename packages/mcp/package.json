@@ -1,10 +1,10 @@
 {
-  "name": "@upstash/context7-mcp",
+  "name": "@m0x/context-mcp",
   "version": "2.1.1",
-  "mcpName": "io.github.upstash/context7",
-  "description": "MCP server for Context7",
+  "mcpName": "io.github.m0x/context",
+  "description": "MCP server for m0x-context",
   "scripts": {
-    "build": "tsc && chmod 755 dist/index.js",
+    "build": "tsc",
     "test": "echo \"No tests yet\"",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -23,17 +23,17 @@
   "keywords": [
     "modelcontextprotocol",
     "mcp",
-    "context7",
+    "m0x-context",
     "vibe-coding",
     "developer tools",
     "documentation",
     "context"
   ],
-  "author": "abdush",
+  "author": "m0x",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "context7-mcp": "dist/index.js"
+    "m0x-context-mcp": "dist/index.js"
   },
   "files": [
     "dist",

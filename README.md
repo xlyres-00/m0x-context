@@ -183,7 +183,7 @@ Deploy m0x-context to Railway for unlimited cloud access!
 
 ### Quick Deploy
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app )
 
 ### Manual Deployment
 
